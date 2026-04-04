@@ -44,6 +44,8 @@ jobs:
         HEADLESS: ${{ secrets.HEADLESS }}
         ENVIRONMENT: ${{ secrets.ENVIRONMENT }}
         LOG_LEVEL: ${{ secrets.LOG_LEVEL }}
+        TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+        TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
 
     - name: Run API tests
       run: python -m pytest tests/api/ -v --tb=short
