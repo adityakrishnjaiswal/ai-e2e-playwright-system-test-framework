@@ -103,25 +103,83 @@ This framework provides a comprehensive testing solution that:
    playwright install
    ```
 
-## ⚙️ Configuration
+## 🔐 Security Configuration
 
-Create a `.env` file in the project root:
+### Environment Variables
 
-```env
-# UI Configuration
-BASE_URL=https://the-internet.herokuapp.com
-BROWSER=chromium
-HEADLESS=true
+The framework uses environment variables for all sensitive configuration to follow security best practices:
 
-# API Configuration
-API_BASE_URL=https://reqres.in
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `TEST_USER_EMAIL` | Test user email for authentication | ✅ |
+| `TEST_USER_PASSWORD` | Test user password | ✅ |
+| `REQRES_API_KEY` | API key for ReqRes service | ❌ |
+| `FAKESTORE_API_KEY` | API key for FakeStore API | ❌ |
+| `BASE_URL` | Base URL for UI tests | ✅ |
+| `API_BASE_URL` | Base API endpoint | ✅ |
+| `AUTH_API_BASE_URL` | Authentication API endpoint | ✅ |
+| `STORE_API_BASE_URL` | Store API endpoint | ✅ |
+| `BROWSER` | Browser for Playwright (chromium/firefox/webkit) | ✅ |
+| `HEADLESS` | Run browser in headless mode | ✅ |
+| `ENVIRONMENT` | Test environment (test/staging/prod) | ✅ |
+| `LOG_LEVEL` | Logging level (DEBUG/INFO/WARNING/ERROR) | ✅ |
+| `API_TIMEOUT` | API request timeout in seconds | ✅ |
+| `MAX_RETRIES` | Maximum retry attempts for failed requests | ✅ |
 
-# Test Credentials
-VALID_USERNAME=tomsmith
-VALID_PASSWORD=SuperSecretPassword!
+### Secret Management Utility
+
+Use the built-in secret manager for secure configuration:
+
+```bash
+# Validate current configuration
+python utils/secret_manager.py validate
+
+# Show masked configuration (safe for sharing)
+python utils/secret_manager.py mask
+
+# Interactive setup wizard
+python utils/secret_manager.py setup
 ```
 
+### Security Best Practices Implemented
+
+- ✅ **No Hardcoded Secrets**: All credentials externalized to environment variables
+- ✅ **Masked Logging**: Sensitive data automatically masked in logs
+- ✅ **Configuration Validation**: Required secrets validated on startup
+- ✅ **Environment-Specific Config**: Support for multiple deployment environments
+- ✅ **Git-Safe**: `.env` files excluded from version control
+- ✅ **CI/CD Ready**: Secrets can be injected via secure pipelines
+
+### Configuration Setup
+
+1. **Copy environment template**
+   ```bash
+   cp .env.example .env
+   ```
+
+2. **Edit with your values**
+   ```bash
+   # Required secrets
+   TEST_USER_EMAIL=your-test-user@example.com
+   TEST_USER_PASSWORD=your-secure-password
+
+   # Optional API keys
+   REQRES_API_KEY=your-reqres-api-key
+   FAKESTORE_API_KEY=your-fakestore-api-key
+   ```
+
+3. **Validate configuration**
+   ```bash
+   python utils/secret_manager.py validate
+   ```
+
 ## 🧪 Running Tests
+
+### Pre-Flight Checks
+```bash
+# Always validate configuration before running tests
+python utils/secret_manager.py validate
+```
 
 ### Run All Tests
 ```bash
@@ -159,19 +217,33 @@ HEADLESS=true pytest
 
 The framework includes a GitHub Actions workflow that:
 
-1. Sets up Python environment
-2. Installs dependencies and Playwright browsers
-3. Runs smoke tests for basic validation
-4. Executes API, UI, and E2E test suites
-5. Generates and uploads test reports
+1. **Security Validation**: Validates all required secrets are configured
+2. Sets up Python environment
+3. Installs dependencies and Playwright browsers
+4. Runs smoke tests for basic validation
+5. Executes API, UI, and E2E test suites
+6. Generates and uploads test reports
 
 ### Pipeline Stages
+- **Security Check**: `python utils/secret_manager.py validate`
 - **Setup**: Environment preparation
 - **Smoke Test**: Basic functionality validation
 - **API Tests**: Backend service validation
 - **UI Tests**: Frontend interaction testing
 - **E2E Tests**: Complete workflow validation
 - **Reporting**: Artifact generation and upload
+
+### Example CI Configuration
+```yaml
+- name: Validate Secrets
+  run: python utils/secret_manager.py validate
+
+- name: Run Tests
+  run: pytest --html=reports/test_report.html --junitxml=reports/junit.xml
+  env:
+    TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+    TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+```
 
 ## 📊 Test Reporting
 
@@ -200,38 +272,67 @@ user = TestDataGenerator.generate_user()
 users = TestDataGenerator.generate_users(5)
 ```
 
-## 🔄 End-to-End Workflow
+## 🔄 End-to-End System Testing
 
-This framework validates a complete user journey simulating a real-world e-commerce system:
+This framework validates a complete user journey across multiple services, demonstrating real-world system testing capabilities beyond isolated UI/API testing.
 
-### User Journey Test (`tests/e2e/test_user_journey.py`)
-1. **Authentication**: Login using ReqRes API
-   - POST https://reqres.in/api/login
-   - Validates token generation
+### Complete User Flow Test (`tests/e2e/test_full_user_flow.py`)
 
-2. **Product Discovery**: Retrieve products from FakeStore API
-   - GET https://fakestoreapi.com/products
-   - Validates product data structure
+**Scenario**: Full e-commerce user journey from authentication to cart validation
 
-3. **Cart Operations**: Add products to cart
-   - POST https://fakestoreapi.com/carts
-   - Creates cart with user and product association
+1. **Authentication Service** (ReqRes API)
+   - POST `https://reqres.in/api/login`
+   - Email: `eve.holt@reqres.in`
+   - Password: `cityslicka`
+   - **Validates**: Token extraction and format
 
-4. **Cart Validation**: Verify cart contents
-   - GET https://fakestoreapi.com/carts
-   - Confirms cart persistence and data integrity
+2. **Product Service** (FakeStore API)
+   - GET `https://fakestoreapi.com/products`
+   - **Validates**: Product catalog retrieval and structure
 
-This end-to-end flow demonstrates:
-- **Multi-API Integration**: Testing across different services
-- **Data Flow Validation**: Ensuring data consistency between systems
-- **Real-world Scenarios**: Simulating actual user behavior
-- **System Reliability**: Validating complete business workflows
+3. **Cart Service** (FakeStore API)
+   - POST `https://fakestoreapi.com/carts`
+   - **Validates**: Cart creation with product association
+
+4. **Cart Validation** (FakeStore API)
+   - GET `https://fakestoreapi.com/carts`
+   - **Validates**: Cart persistence and data consistency
+
+### Key Testing Capabilities Demonstrated
+
+- **Multi-Service Integration**: Testing across authentication, product, and cart services
+- **Cross-Service Data Flow**: Validating data consistency between different APIs
+- **Real-World API Behavior**: Handling actual HTTP responses and error conditions
+- **System-Level Validation**: Ensuring end-to-end business logic correctness
+- **Distributed System Testing**: Simulating real user interactions across microservices
+
+### Negative Testing Scenarios (`tests/e2e/test_negative_flow.py`)
+
+- **Invalid Authentication**: Testing failed login attempts
+- **Empty Cart Handling**: Validating cart operations with invalid data
+- **Non-existent Resources**: Testing API behavior with invalid product/user IDs
+- **Malformed Requests**: Edge case handling and error recovery
 
 ### API Client Architecture
-- **Modular Design**: Separate clients for auth and store APIs
-- **Error Handling**: Comprehensive exception handling and logging
-- **Session Management**: Persistent HTTP sessions for efficiency
-- **Type Safety**: Full type hints for better code maintainability
+
+The enhanced `api/api_client.py` provides:
+
+- **Real API Integration**: Direct calls to ReqRes and FakeStore APIs
+- **Comprehensive Error Handling**: Request timeouts, status code validation, exception handling
+- **Detailed Logging**: Step-by-step execution tracking for debugging
+- **Response Validation**: Automatic status code and data structure checks
+- **Session Management**: Efficient HTTP connection reuse
+
+### Assertion Layer (`utils/assertions.py`)
+
+Reusable validation utilities:
+- `validate_response_status()`: HTTP status code validation
+- `validate_non_empty_list()`: List content validation
+- `validate_key_exists()`: JSON structure validation
+- `validate_product_structure()`: Product data schema validation
+- `validate_cart_structure()`: Cart data schema validation
+
+This demonstrates enterprise-grade testing practices with modular, maintainable assertion logic.
 
 ## 🧪 Example Test Cases
 
