@@ -72,6 +72,8 @@ jobs:
         VALID_PASSWORD: ${{ secrets.VALID_PASSWORD }}
         INVALID_USERNAME: ${{ secrets.INVALID_USERNAME }}
         INVALID_PASSWORD: ${{ secrets.INVALID_PASSWORD }}
+        TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+        TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
 
     - name: Run E2E tests
       run: python -m pytest tests/e2e/ -v --tb=short
