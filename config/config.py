@@ -17,14 +17,14 @@ class Config:
     STORE_API_BASE_URL = os.getenv('STORE_API_BASE_URL', 'https://jsonplaceholder.typicode.com')
 
     # Test Credentials - Should be stored in secure vault/environment
-    TEST_USER_EMAIL = os.getenv('TEST_USER_EMAIL', 'eve.holt@reqres.in')
-    TEST_USER_PASSWORD = os.getenv('TEST_USER_PASSWORD', 'cityslicka')
+    TEST_USER_EMAIL = os.getenv('TEST_USER_EMAIL', 'your_test_user_email@example.com')
+    TEST_USER_PASSWORD = os.getenv('TEST_USER_PASSWORD', 'your_secure_test_password')
     INVALID_USER_EMAIL = os.getenv('INVALID_USER_EMAIL', 'invalid@example.com')
     INVALID_USER_PASSWORD = os.getenv('INVALID_USER_PASSWORD', 'wrongpassword')
 
     # UI Test Credentials
-    VALID_USERNAME = os.getenv('VALID_USERNAME', 'tomsmith')
-    VALID_PASSWORD = os.getenv('VALID_PASSWORD', 'SuperSecretPassword!')
+    VALID_USERNAME = os.getenv('VALID_USERNAME', 'your_valid_ui_username')
+    VALID_PASSWORD = os.getenv('VALID_PASSWORD', 'your_valid_ui_password')
     INVALID_USERNAME = os.getenv('INVALID_USERNAME', 'invalid')
     INVALID_PASSWORD = os.getenv('INVALID_PASSWORD', 'invalid')
 

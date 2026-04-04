@@ -282,8 +282,8 @@ This framework validates a complete user journey across multiple services, demon
 
 1. **Authentication Service** (ReqRes API)
    - POST `https://reqres.in/api/login`
-   - Email: `eve.holt@reqres.in`
-   - Password: `cityslicka`
+   - Email: `your_test_user@example.com`
+   - Password: `your_secure_password`
    - **Validates**: Token extraction and format
 
 2. **Product Service** (FakeStore API)

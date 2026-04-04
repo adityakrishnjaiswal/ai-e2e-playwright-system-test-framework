@@ -92,7 +92,7 @@ def test_login_and_get_products(api_client: APIClient):
     logger.info("Testing login and product access flow")
 
     # Login
-    token = api_client.login("eve.holt@reqres.in", "cityslicka")
+    token = api_client.login(Config.TEST_USER_EMAIL, Config.TEST_USER_PASSWORD)
     APIAssertions.validate_token_format(token)
     assert token is not None, "Authentication should succeed"
     logger.info("✅ Authentication successful")
