@@ -117,11 +117,3 @@ def test_full_user_flow(api_client: APIClient):
 
     logger.info("✅ All data consistency checks passed")
     logger.info("🎉 Complete e2e user flow test PASSED!")
-
-    # Return test data for potential use in other tests
-    return {
-        "token": token,
-        "selected_product": selected_product,
-        "created_cart": cart,
-        "user_id": user_id
-    }
