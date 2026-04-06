@@ -1,6 +1,8 @@
 import logging
 from typing import Dict, Any, List
 
+from api.models import Product, Cart, CartItem
+
 logger = logging.getLogger(__name__)
 
 class APIAssertions:
@@ -23,7 +25,7 @@ class APIAssertions:
         assert key in data, f"Key '{key}' not found in response data. Available keys: {list(data.keys())}"
 
     @staticmethod
-    def validate_product_structure(product: Dict[str, Any]) -> None:
+    def validate_product_structure(product: Product) -> None:
         """Validate product data structure."""
         required_keys = ["id", "title", "price", "description", "category", "image"]
         for key in required_keys:
@@ -31,7 +33,7 @@ class APIAssertions:
         assert isinstance(product["price"], (int, float)), f"Price should be numeric, got {type(product['price'])}"
 
     @staticmethod
-    def validate_cart_structure(cart: Dict[str, Any]) -> None:
+    def validate_cart_structure(cart: Cart) -> None:
         """Validate cart data structure."""
         required_keys = ["id", "userId", "date", "products"]
         for key in required_keys:

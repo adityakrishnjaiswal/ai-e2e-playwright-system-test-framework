@@ -70,4 +70,3 @@ class Config:
         if 'password' in key.lower() or 'secret' in key.lower() or 'key' in key.lower():
             return f"{'*' * 8} (length: {len(value)})" if value else "NOT SET"
         return value
-    INVALID_PASSWORD = 'invalid'

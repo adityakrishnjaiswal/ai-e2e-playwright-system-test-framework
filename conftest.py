@@ -1,15 +1,15 @@
 import os
-import pytest
 import logging
 from pathlib import Path
+
+import pytest
 from playwright.sync_api import Playwright, Browser, Page
 from playwright._impl._api_types import Error as PlaywrightError
-from config.config import Config
+
 from api.api_client import APIClient
+from config.config import Config
 
 # Register custom rich HTML dashboard reporter
-pytest_plugins = ["utils.custom_reporter"]
-
 pytest_plugins = ["utils.custom_reporter"]
 
 logger = logging.getLogger(__name__)
@@ -26,7 +26,7 @@ def validate_secrets():
 
 @pytest.fixture(scope="session")
 def playwright_browser(playwright: Playwright) -> Browser:
-    """Launch browser for the session."""
+    """Launch a browser once per session with sensible fallbacks for CI/macOS."""
     launch_kwargs = {"headless": Config.HEADLESS}
 
     # Prefer a system Chrome if present to avoid quarantined bundled builds.
